@@ -1,5 +1,5 @@
 {
-  "id": "0846c317-53fa-4706-a1a1-fc750b495fb0",
+  "id": "3a00cde8-b6aa-42be-b2e4-c36c0af308f4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -50,8 +50,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "embedding": {
-          "name": "embedding",
+        "emb_title": {
+          "name": "emb_title",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_author": {
+          "name": "emb_author",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_genre": {
+          "name": "emb_genre",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_description": {
+          "name": "emb_description",
           "type": "vector(1536)",
           "primaryKey": false,
           "notNull": false
@@ -72,11 +90,59 @@
         }
       },
       "indexes": {
-        "embedding_idx": {
-          "name": "embedding_idx",
+        "books_emb_title_hnsw": {
+          "name": "books_emb_title_hnsw",
           "columns": [
             {
-              "expression": "embedding",
+              "expression": "emb_title",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_author_hnsw": {
+          "name": "books_emb_author_hnsw",
+          "columns": [
+            {
+              "expression": "emb_author",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_genre_hnsw": {
+          "name": "books_emb_genre_hnsw",
+          "columns": [
+            {
+              "expression": "emb_genre",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_desc_hnsw": {
+          "name": "books_emb_desc_hnsw",
+          "columns": [
+            {
+              "expression": "emb_description",
               "isExpression": false,
               "asc": true,
               "nulls": "last",

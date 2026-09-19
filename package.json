@@ -10,24 +10,27 @@
     "dev:web": "vite",
     "build": "vite build",
     "start": "bun --env-file=.env src/index.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "db:seed": "bun src/seed.ts",
-    "db:reembed": "bun src/reembed.ts"
+    "db:generate": "bun --env-file=.env drizzle-kit generate",
+    "db:migrate": "bun --env-file=.env drizzle-kit migrate",
+    "db:push": "bun --env-file=.env drizzle-kit push",
+    "db:studio": "bun --env-file=.env drizzle-kit studio",
+    "db:setup": "bun --env-file=.env src/db/setup.ts",
+    "db:seed": "bun --env-file=.env src/seed.ts",
+    "db:reembed": "bun --env-file=.env src/reembed.ts"
   },
   "dependencies": {
     "@google/genai": "^2.23.0",
     "@google/generative-ai": "^0.24.1",
     "@hono/node-server": "^2.1.1",
+    "@hono/zod-validator": "^0.9.1",
     "@neondatabase/serverless": "^1.1.0",
     "@vitejs/plugin-react": "^6.1.1",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.13.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

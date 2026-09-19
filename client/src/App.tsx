@@ -52,8 +52,10 @@ export default function App() {
       });
       const data = await r.json();
       setBooks(data.results);
-      const t = data.timings;
-      if (t) {
+      if (data.degraded) {
+        setTiming("degraded mode — keyword only (embeddings unavailable)");
+      } else if (data.timings) {
+        const t = data.timings;
         const total = t.embeddingMs + t.dbMs;
         setTiming(
           `${(total / 1000).toFixed(1)}s (embed ${(t.embeddingMs / 1000).toFixed(1)}s · db ${t.dbMs}ms)`

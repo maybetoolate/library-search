@@ -86,6 +86,15 @@ const demoBooks = [
 ];
 
 async function seed() {
+  if (
+    process.env.NODE_ENV === "production" &&
+    !process.argv.includes("--force")
+  ) {
+    console.error(
+      "Refusing to seed in production (this wipes the books table). Pass --force if you really mean it."
+    );
+    process.exit(1);
+  }
   console.log("Seeding database with per-field embeddings...");
 
   // Start clean so re-runs don't duplicate rows

@@ -15,6 +15,14 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 async function withRetry<T>(fn: () => Promise<T>, attempts = 5): Promise<T> {
   let lastError: unknown;
   for (let i = 0; i < attempts; i++) {
@@ -35,11 +43,14 @@ async function withRetry<T>(fn: () => Promise<T>, attempts = 5): Promise<T> {
 
 export async function generateEmbedding(text: string): Promise<number[]> {
   const response = await withRetry(() =>
-    genAI.models.embedContent({
-      model: "gemini-embedding-2",
-      contents: text,
-      config: { outputDimensionality: EMBEDDING_DIMS },
-    })
+    withTimeout(
+      genAI.models.embedContent({
+        model: "gemini-embedding-2",
+        contents: text,
+        config: { outputDimensionality: EMBEDDING_DIMS },
+      }),
+      20_000
+    )
   );
   const values = response.embeddings?.[0]?.values;
   if (!values) {
@@ -174,6 +185,59 @@ export async function autocompleteBooks(q: string, limit = 8) {
 // alpha=1 is pure semantic, alpha=0 pure keyword. Default 0.7.
 // ---------------------------------------------------------------------------
 
+function buildFilterClause(filters?: {
+  genre?: string;
+  minRating?: number;
+  author?: string;
+}) {
+  let whereClause = sql`1=1`;
+  if (filters?.genre) {
+    whereClause = sql`${whereClause} AND ${books.genre} = ${filters.genre}`;
+  }
+  if (filters?.minRating) {
+    whereClause = sql`${whereClause} AND ${books.rating} >= ${filters.minRating}`;
+  }
+  if (filters?.author) {
+    whereClause = sql`${whereClause} AND ${books.author} ILIKE ${`%${filters.author}%`}`;
+  }
+  return whereClause;
+}
+
+async function lexicalOnlySearch(
+  query: string,
+  whereClause: SQL<unknown>,
+  limit: number
+) {
+  const tDb0 = performance.now();
+  const lexical = lexicalScoreExpr(query);
+  const results = await db
+    .select({
+      id: books.id,
+      title: books.title,
+      author: books.author,
+      description: books.description,
+      genre: books.genre,
+      publishedYear: books.publishedYear,
+      rating: books.rating,
+      scoreTitle: sql<number>`0`,
+      scoreAuthor: sql<number>`0`,
+      scoreGenre: sql<number>`0`,
+      scoreDescription: sql<number>`0`,
+      scoreVector: sql<number>`0`,
+      scoreLexical: lexical,
+      score: lexical,
+    })
+    .from(books)
+    .where(sql`${whereClause} AND (${lexical}) > 0`)
+    .orderBy(desc(lexical))
+    .limit(limit);
+  return {
+    results,
+    timings: { embeddingMs: 0, dbMs: Math.round(performance.now() - tDb0) },
+    degraded: true as const,
+  };
+}
+
 export async function searchBooks(
   query: string,
   filters?: {
@@ -186,11 +250,19 @@ export async function searchBooks(
   alpha = 0.7
 ) {
   const a = Math.min(1, Math.max(0, alpha));
+  const whereClause = buildFilterClause(filters);
 
   // ONE query embedding, reused across all 4 fields (same input text →
   // same vector; 4 calls was pure quota burn). Cached for repeat queries.
+  // If Gemini is down, degrade to lexical-only instead of 500ing.
   const tEmbed0 = performance.now();
-  const qVec = await embedQueryCached(query);
+  let qVec: number[];
+  try {
+    qVec = await embedQueryCached(query);
+  } catch (e) {
+    console.error("Embedding failed, falling back to lexical search:", e);
+    return lexicalOnlySearch(query, whereClause, limit);
+  }
   const embeddingMs = performance.now() - tEmbed0;
   const qStr = JSON.stringify(qVec);
 
@@ -211,20 +283,7 @@ export async function searchBooks(
   + ${weights.description} * (${simDesc})
   ) / ${totalWeight}`;
 
-  // Filters
-  let whereClause = sql`1=1`;
-  if (filters?.genre) {
-    whereClause = sql`${whereClause} AND ${books.genre} = ${filters.genre}`;
-  }
-  if (filters?.minRating) {
-    whereClause = sql`${whereClause} AND ${books.rating} >= ${filters.minRating}`;
-  }
-  if (filters?.author) {
-    whereClause = sql`${whereClause} AND ${books.author} ILIKE ${`%${filters.author}%`}`;
-  }
-
-  // Lexical grounding: best trigram match across the short fields.
-  // similarity() = 0 with no shared trigrams, 1 for identical strings.
+  // Filters (shared by the full and degraded paths)
   const lexical = lexicalScoreExpr(query);
   const finalScore: SQL<number> = sql<number>`${a} * (${weightedScore}) + ${1 - a} * (${lexical})`;
 
@@ -280,6 +339,7 @@ export async function searchBooks(
       embeddingMs: Math.round(embeddingMs),
       dbMs: Math.round(dbMs),
     },
+    degraded: false as const,
   };
 }
 

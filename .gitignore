@@ -5,3 +5,5 @@ dist/
 .neon/
 *.log
 .DS_Store
+.neon
+.neon/
