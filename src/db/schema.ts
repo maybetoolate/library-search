@@ -5,7 +5,9 @@ import {
   integer,
   vector,
   index,
+  check,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const books = pgTable(
   "books",
@@ -27,6 +29,7 @@ export const books = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
+    check("books_rating_check", sql`${table.rating} BETWEEN 1 AND 5`),
     index("books_emb_title_hnsw")
       .using("hnsw", table.embTitle.op("vector_cosine_ops")),
     index("books_emb_author_hnsw")

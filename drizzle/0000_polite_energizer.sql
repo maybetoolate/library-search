@@ -11,7 +11,8 @@ CREATE TABLE "books" (
 	"emb_genre" vector(1536),
 	"emb_description" vector(1536),
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "books_rating_check" CHECK("rating" BETWEEN 1 AND 5)
 );
 --> statement-breakpoint
 CREATE INDEX "books_emb_title_hnsw" ON "books" USING hnsw ("emb_title" vector_cosine_ops);--> statement-breakpoint

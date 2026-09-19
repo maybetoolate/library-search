@@ -30,6 +30,6 @@ export const DEFAULT_WEIGHTS: Weights = {
 };
 
 export function stars(n: number | null): string {
-  const filled = n ?? 0;
+  const filled = Math.min(5, Math.max(0, Math.round(n ?? 0)));
   return "★".repeat(filled) + "☆".repeat(5 - filled);
 }
