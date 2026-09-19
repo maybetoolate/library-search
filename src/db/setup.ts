@@ -9,10 +9,14 @@ import { sql } from "drizzle-orm";
 async function setup() {
   const here = dirname(fileURLToPath(import.meta.url));
   const file = join(here, "..", "..", "drizzle", "extensions.sql");
-  const statements = (await readFile(file, "utf-8"))
+  const raw = await readFile(file, "utf-8");
+  const statements = raw
+    .split("\n")
+    .filter((line) => !line.trim().startsWith("--"))
+    .join("\n")
     .split(";")
     .map((s) => s.trim())
-    .filter((s) => s && !s.startsWith("--"));
+    .filter(Boolean);
 
   for (const stmt of statements) {
     await db.execute(sql.raw(stmt));
