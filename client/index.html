@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library — Multi-Vector Semantic Search</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      .card { transition: transform .15s ease, box-shadow .15s ease; }
+      .card:hover { transform: translateY(-2px); }
+      .stars { color: #f59e0b; letter-spacing: 1px; }
+      input[type=range] { -webkit-appearance: none; background: transparent; }
+      input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: #3f3f46; }
+      input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #10b981; margin-top: -5px; cursor: pointer; }
+    </style>
+  </head>
+  <body class="bg-zinc-950 text-zinc-100 min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
