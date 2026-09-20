@@ -1,0 +1,204 @@
+{
+  "id": "11a16ab1-f16a-496d-a40a-d3f1be73629b",
+  "prevId": "3a00cde8-b6aa-42be-b2e4-c36c0af308f4",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.books": {
+      "name": "books",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author": {
+          "name": "author",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "genre": {
+          "name": "genre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "published_year": {
+          "name": "published_year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_title": {
+          "name": "emb_title",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_author": {
+          "name": "emb_author",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_genre": {
+          "name": "emb_genre",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_description": {
+          "name": "emb_description",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emb_autocomplete": {
+          "name": "emb_autocomplete",
+          "type": "vector(384)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "books_emb_title_hnsw": {
+          "name": "books_emb_title_hnsw",
+          "columns": [
+            {
+              "expression": "emb_title",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_author_hnsw": {
+          "name": "books_emb_author_hnsw",
+          "columns": [
+            {
+              "expression": "emb_author",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_genre_hnsw": {
+          "name": "books_emb_genre_hnsw",
+          "columns": [
+            {
+              "expression": "emb_genre",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_desc_hnsw": {
+          "name": "books_emb_desc_hnsw",
+          "columns": [
+            {
+              "expression": "emb_description",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        },
+        "books_emb_autocomplete_hnsw": {
+          "name": "books_emb_autocomplete_hnsw",
+          "columns": [
+            {
+              "expression": "emb_autocomplete",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "books_rating_check": {
+          "name": "books_rating_check",
+          "value": "\"books\".\"rating\" BETWEEN 1 AND 5"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

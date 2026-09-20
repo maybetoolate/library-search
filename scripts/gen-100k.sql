@@ -4,7 +4,8 @@
 -- genuine Gemini embeddings, so ranking sanity = real signal vs 100k noise.
 INSERT INTO books
   (id, title, author, description, genre, published_year, rating,
-   emb_title, emb_author, emb_genre, emb_description)
+   emb_title, emb_author, emb_genre, emb_description, emb_autocomplete,
+   emb_autocomplete_genre)
 SELECT
   'synth-' || g AS id,
   adj[(floor(random() * 48))::int + 1] || ' ' ||
@@ -20,11 +21,19 @@ SELECT
   v.a::vector AS emb_title,
   v.a::vector AS emb_author,
   v.a::vector AS emb_genre,
-  v.a::vector AS emb_description
+  v.a::vector AS emb_description,
+  v384.b::vector AS emb_autocomplete,
+  v384g.c::vector AS emb_autocomplete_genre
 FROM generate_series(1, 100000) AS g
 CROSS JOIN LATERAL (
   SELECT array_agg(random()) AS a FROM generate_series(1, 1536)
 ) AS v
+CROSS JOIN LATERAL (
+  SELECT array_agg(random()) AS b FROM generate_series(1, 384)
+) AS v384
+CROSS JOIN LATERAL (
+  SELECT array_agg(random()) AS c FROM generate_series(1, 384)
+) AS v384g
 CROSS JOIN (SELECT ARRAY[
   'Silent','Crimson','Hollow','Golden','Midnight','Velvet','Iron','Paper',
   'Electric','Forgotten','Brave','Lonely','Sacred','Broken','Endless','Hidden',

@@ -104,7 +104,9 @@ export default function SearchBox({
                   <span className="text-zinc-500"> · {s.author}</span>
                 </span>
                 {s.genre && (
-                  <span className="text-xs text-zinc-500 shrink-0">{s.genre}</span>
+                  <span className="text-xs shrink-0 rounded-full border border-emerald-700 bg-emerald-950 px-2 py-0.5 text-emerald-300">
+                    {s.genre}
+                  </span>
                 )}
               </button>
             </li>

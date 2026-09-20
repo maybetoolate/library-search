@@ -5,16 +5,36 @@ import { embedBookFields } from "./lib/embeddings";
 
 // Regenerates per-field embeddings for all books.
 async function reembed() {
-  const all = await db.select().from(books);
-  console.log(`Re-embedding ${all.length} books (4 vectors each)...`);
+  const PAGE = 200;
+  let offset = 0;
+  let total = 0;
 
-  for (const book of all) {
-    const embs = await embedBookFields(book);
-    await db
-      .update(books)
-      .set(embs)
-      .where(sql`${books.id} = ${book.id}`);
-    console.log(`Updated: ${book.title}`);
+  // Count once so the user sees progress.
+  const countResult = await db.execute(sql`SELECT count(*)::int AS n FROM books`);
+  const count = (countResult.rows[0] as { n: number }).n;
+  console.log(`Re-embedding ${count} books (6 vectors each: 4x1536 + 2x384)...`);
+
+  for (;;) {
+    const page = await db
+      .select()
+      .from(books)
+      .orderBy(books.id)
+      .limit(PAGE)
+      .offset(offset);
+
+    if (page.length === 0) break;
+
+    for (const book of page) {
+      const embs = await embedBookFields(book);
+      await db
+        .update(books)
+        .set(embs)
+        .where(sql`${books.id} = ${book.id}`);
+      total++;
+      console.log(`[${total}/${count}] ${book.title}`);
+    }
+
+    offset += PAGE;
   }
 
   console.log("Done!");

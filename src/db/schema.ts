@@ -25,6 +25,12 @@ export const books = pgTable(
     embAuthor: vector("emb_author", { dimensions: 1536 }),
     embGenre: vector("emb_genre", { dimensions: 1536 }),
     embDescription: vector("emb_description", { dimensions: 1536 }),
+    // Lightweight autocomplete vectors (384 dims — NOT 1536): autocomplete
+    // fires per keystroke, so it uses cheaper/faster embeddings than the
+    // main multi-vector search. Title/author and genre get separate vectors
+    // so the short genre signal isn't diluted inside the longer text.
+    embAutocomplete: vector("emb_autocomplete", { dimensions: 384 }),
+    embAutocompleteGenre: vector("emb_autocomplete_genre", { dimensions: 384 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -38,5 +44,9 @@ export const books = pgTable(
       .using("hnsw", table.embGenre.op("vector_cosine_ops")),
     index("books_emb_desc_hnsw")
       .using("hnsw", table.embDescription.op("vector_cosine_ops")),
+    index("books_emb_autocomplete_hnsw")
+      .using("hnsw", table.embAutocomplete.op("vector_cosine_ops")),
+    index("books_emb_autocomplete_genre_hnsw")
+      .using("hnsw", table.embAutocompleteGenre.op("vector_cosine_ops")),
   ]
 );
