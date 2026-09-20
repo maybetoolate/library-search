@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const input =
-  "w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 outline-none focus:border-emerald-500";
+  "w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm outline-none focus:border-emerald-500";
 
 export default function AddBookForm({ onAdded }: { onAdded: () => void }) {
   const [title, setTitle] = useState("");
@@ -48,7 +48,7 @@ export default function AddBookForm({ onAdded }: { onAdded: () => void }) {
   }
 
   return (
-    <aside className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 h-fit shadow">
+    <aside className="w-full min-w-0 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 sm:p-5 h-fit shadow">
       <h2 className="font-semibold mb-3">＋ Add a book</h2>
       <div className="space-y-2">
         <input placeholder="Title *" value={title} onChange={(e) => setTitle(e.target.value)} className={input} />
@@ -56,9 +56,9 @@ export default function AddBookForm({ onAdded }: { onAdded: () => void }) {
         <textarea placeholder="Description" rows={3} value={desc} onChange={(e) => setDesc(e.target.value)} className={input} />
         <div className="grid grid-cols-2 gap-2">
           <input placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)}
-            className="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 outline-none focus:border-emerald-500" />
+            className="w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm outline-none focus:border-emerald-500" />
           <input type="number" placeholder="Year" value={year} onChange={(e) => setYear(e.target.value)}
-            className="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 outline-none focus:border-emerald-500" />
+            className="w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm outline-none focus:border-emerald-500" />
         </div>
         <select value={rating} onChange={(e) => setRating(e.target.value)} className={input}>
           <option value="5">★ ★ ★ ★ ★ (5)</option>

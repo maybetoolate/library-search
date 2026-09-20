@@ -84,10 +84,10 @@ export default function SearchBox({
             setOpen(false);
           }
         }}
-        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 placeholder:text-zinc-500"
+        className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-base outline-none focus:border-emerald-500 placeholder:text-zinc-500"
       />
       {open && (
-        <ul className="absolute z-10 left-0 right-0 mt-1 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl">
+        <ul className="absolute z-10 left-0 right-0 mt-1 max-h-[60vh] overflow-y-auto bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl">
           {suggestions.map((s, i) => (
             <li key={s.id}>
               <button
@@ -95,11 +95,11 @@ export default function SearchBox({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => pick(s)}
                 onMouseEnter={() => setHighlight(i)}
-                className={`w-full text-left px-4 py-2 flex items-baseline justify-between gap-2 ${
+                className={`w-full text-left px-4 py-3 flex items-center justify-between gap-2 ${
                   i === highlight ? "bg-zinc-800" : ""
                 }`}
               >
-                <span className="text-sm">
+                <span className="text-sm min-w-0 flex-1 truncate">
                   <span className="font-medium">{s.title}</span>
                   <span className="text-zinc-500"> · {s.author}</span>
                 </span>

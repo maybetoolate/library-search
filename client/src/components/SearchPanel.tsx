@@ -23,6 +23,7 @@ function Slider({
         step="0.5"
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+        className="w-full h-8 accent-emerald-500"
       />
     </label>
   );
@@ -49,30 +50,32 @@ export default function SearchPanel(props: {
 }) {
   const { weights, setWeights } = props;
   return (
-    <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-6 shadow">
-      <div className="flex gap-2">
+    <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 sm:p-5 mb-4 sm:mb-6 shadow">
+      <div className="flex flex-col sm:flex-row gap-2">
         <SearchBox query={props.query} setQuery={props.setQuery} onSearch={props.onSearch} />
-        <button
-          type="button"
-          onClick={props.onSearch}
-          className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold px-6 rounded-xl"
-        >
-          Search
-        </button>
-        <button
-          type="button"
-          onClick={props.onBrowse}
-          className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-5 rounded-xl"
-        >
-          Browse
-        </button>
+        <div className="grid grid-cols-2 sm:flex gap-2">
+          <button
+            type="button"
+            onClick={props.onSearch}
+            className="bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-400 text-zinc-950 font-semibold px-6 py-3 sm:py-0 rounded-xl"
+          >
+            Search
+          </button>
+          <button
+            type="button"
+            onClick={props.onBrowse}
+            className="bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-700 border border-zinc-700 px-5 py-3 sm:py-0 rounded-xl"
+          >
+            Browse
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-3 sm:mt-4">
         <select
           value={props.genre}
           onChange={(e) => props.setGenre(e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2"
+          className="w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm"
         >
           <option value="">All genres</option>
           <option value="Fiction">Fiction</option>
@@ -85,12 +88,12 @@ export default function SearchPanel(props: {
           placeholder="Author contains…"
           value={props.author}
           onChange={(e) => props.setAuthor(e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 outline-none focus:border-emerald-500"
+          className="w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm outline-none focus:border-emerald-500"
         />
         <select
           value={props.rating}
           onChange={(e) => props.setRating(e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2"
+          className="w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm"
         >
           <option value="">Any rating</option>
           <option value="5">★ 5 only</option>
@@ -100,7 +103,7 @@ export default function SearchPanel(props: {
         <select
           value={props.limit}
           onChange={(e) => props.setLimit(e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2"
+          className="w-full min-w-0 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-base sm:text-sm"
         >
           <option value="10">Top 10</option>
           <option value="5">Top 5</option>
@@ -128,6 +131,7 @@ export default function SearchPanel(props: {
             step="0.05"
             value={props.alpha}
             onChange={(e) => props.setAlpha(parseFloat(e.target.value))}
+            className="w-full h-8 accent-emerald-500"
           />
         </label>
         <div className="flex items-center justify-between mb-3">
@@ -142,7 +146,7 @@ export default function SearchPanel(props: {
             Reset defaults
           </button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 sm:gap-4">
           <Slider label="Title" value={weights.title} onChange={(v) => setWeights({ ...weights, title: v })} />
           <Slider label="Author" value={weights.author} onChange={(v) => setWeights({ ...weights, author: v })} />
           <Slider label="Genre" value={weights.genre} onChange={(v) => setWeights({ ...weights, genre: v })} />

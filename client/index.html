@@ -9,9 +9,11 @@
       .card { transition: transform .15s ease, box-shadow .15s ease; }
       .card:hover { transform: translateY(-2px); }
       .stars { color: #f59e0b; letter-spacing: 1px; }
-      input[type=range] { -webkit-appearance: none; background: transparent; }
+      input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; touch-action: pan-y; }
       input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: #3f3f46; }
-      input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #10b981; margin-top: -5px; cursor: pointer; }
+      input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #10b981; margin-top: -8px; cursor: pointer; }
+      input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: #3f3f46; }
+      input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border: none; border-radius: 50%; background: #10b981; cursor: pointer; }
     </style>
   </head>
   <body class="bg-zinc-950 text-zinc-100 min-h-screen">

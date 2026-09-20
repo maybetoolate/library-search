@@ -96,10 +96,10 @@ export default function App() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <header className="flex flex-wrap items-end justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">📚 Library</h1>
+    <div className="max-w-6xl mx-auto px-4 py-4 sm:py-8">
+      <header className="flex flex-wrap items-end justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">📚 Library</h1>
           <p className="text-zinc-400 text-sm mt-1">
             multi-vector search · per-field embeddings · gemini-embedding-2 · Neon Postgres
           </p>
@@ -125,11 +125,11 @@ export default function App() {
 
       <div className="grid md:grid-cols-[1fr_320px] gap-6">
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-lg">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <h2 className="font-semibold text-base sm:text-lg min-w-0 truncate">
               {mode === "semantic" ? `Results for “${query}”` : "All books"}
             </h2>
-            <span className="text-sm text-zinc-500">
+            <span className="text-sm text-zinc-500 shrink-0">
               {books.length ? `${books.length} book${books.length > 1 ? "s" : ""}` : ""}
             </span>
           </div>

@@ -29,7 +29,7 @@ export default function BookCard({
   const hasScores = typeof book.score === "number";
   const scorePct = hasScores ? Math.round((book.score as number) * 100) : null;
   return (
-    <article className="card bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow">
+    <article className="card min-w-0 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow">
       <div className="flex items-start justify-between gap-2 mb-1">
         <span className="text-xs bg-zinc-800 border border-zinc-700 px-2 py-0.5 rounded-full">
           {book.genre || "Unknown"}
@@ -40,7 +40,7 @@ export default function BookCard({
           </span>
         )}
       </div>
-      <h3 className="font-semibold leading-snug">{book.title}</h3>
+      <h3 className="font-semibold leading-snug break-words">{book.title}</h3>
       <p className="text-sm text-zinc-400">
         by {book.author}
         {book.publishedYear ? ` · ${book.publishedYear}` : ""}
